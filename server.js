@@ -12,6 +12,9 @@ var app = express();
 var cors = require('cors');
 app.use(cors({optionSuccessStatus: 200}));  // some legacy browsers choke on 204
 
+// enable trust proxy setting to true to get ip address details
+app.set('trust proxy', true);
+
 // http://expressjs.com/en/starter/static-files.html
 app.use(express.static('public'));
 
@@ -26,6 +29,18 @@ app.get("/api/hello", (req, res) => {
   res.json({greeting: 'hello API'});
 });
 
+// API endpoint for header info request
+app.get("/api/whoami", (req, res) => {
+  var result = {
+    ipaddress: null,
+    language: null,
+    software: null
+  };
+  result.ipaddress = req.ip;
+  result.language = req.headers['accept-language'];
+  result.software = req.headers['user-agent'];
+  res.json(result);
+});
 
 
 // listen for requests :)
